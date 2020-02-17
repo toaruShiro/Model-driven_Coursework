@@ -40,12 +40,16 @@ public interface SystemTypes {
 			List _results_2 = new Vector();
 			for (int _i = 0; _i < _l.size(); _i++) {
 				int mk = ((Integer) _l.get(_i)).intValue();
-				_results_2.add(new Double((((Sector) cdox.getsectors().get(
-						k - 1)).getmu()
-						* mk
-						* ((Sector) cdox.getsectors().get(k - 1)).getL()
-						* cdox.PCond(k, mk) * cdox.PS(s - mk
-						* ((Sector) cdox.getsectors().get(k - 1)).getL()))));
+				_results_2.add(
+					new Double(
+								((Sector) cdox.getsectors().get(k - 1)).getmu()
+						      * mk
+						      * ((Sector) cdox.getsectors().get(k - 1)).getL()
+					     	  * cdox.PCond(k, mk) 
+					     	  * cdox.PS(s - mk * ((Sector) cdox.getsectors().get(k - 1)).getL()
+					     	           )
+					)
+				);
 			}
 			return _results_2;
 		}

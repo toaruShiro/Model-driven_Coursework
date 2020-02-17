@@ -602,6 +602,7 @@ public class Controller implements SystemTypes, ControllerInterface {
 		Date d1 = new Date();
 		long t1 = d1.getTime();
 
+		//对于所有CDO,执行testouter
 		List cdotest1outerx = new Vector();
 		cdotest1outerx.addAll(Controller.inst().cdos);
 		for (int cdotest1outerx_ind4 = 0; cdotest1outerx_ind4 < cdotest1outerx
@@ -610,12 +611,14 @@ public class Controller implements SystemTypes, ControllerInterface {
 					(CDO) cdotest1outerx.get(cdotest1outerx_ind4));
 		}
 
+		//对于所有CDO,执行test2
 		List cdotest2x = new Vector();
 		cdotest2x.addAll(Controller.inst().cdos);
 		for (int cdotest2x_ind5 = 0; cdotest2x_ind5 < cdotest2x.size(); cdotest2x_ind5++) {
 			Controller.inst().test2((CDO) cdotest2x.get(cdotest2x_ind5));
 		}
 
+		//对于所有CDO,执行test3
 		List cdotest3x = new Vector();
 		cdotest3x.addAll(Controller.inst().cdos);
 		for (int cdotest3x_ind6 = 0; cdotest3x_ind6 < cdotest3x.size(); cdotest3x_ind6++) {

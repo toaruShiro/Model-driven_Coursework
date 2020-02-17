@@ -188,21 +188,22 @@ class CDO implements SystemTypes {
 
 	public double PS(int s) {
 		double result = 0;
+		//获取PS_cache中key为s的值
 		Object cached_result = PS_cache.get(new Integer(s));
-		if (cached_result != null) {
+		if (cached_result != null) { //能取到该值
 			result = ((Double) cached_result).doubleValue();
 			return result;
-		} else {
+		} else { //不能取到该值(未put过)
 			if (s < 0) {
 				result = 0;
-
-			} else if (s == 0) {
+				System.out.println("s < 0: " + s);
+			} else if (s == 0) { //当key s为0时put p0
 				result = ps0;
 
-			} else if (s > 0) {
-				result = Set.sumdouble(Set.collect_1(
-						Set.integerSubrange(1, sectors.size()), this, s))
-						/ s;
+			} else if (s > 0) { //当key大于0时，put (1.0/s)*Integer.Sum(1,sectors.size,k,vs(s,k))) 
+				                               //k从1到sectors.size,所有vs(s,k)的和
+				                               //即(所有sector中vs(s,k)的和) / s
+				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;
 
 			}
 			PS_cache.put(new Integer(s), new Double(result));
@@ -210,43 +211,60 @@ class CDO implements SystemTypes {
 		return result;
 	}
 
+	/*
+	 CDO::
+     query vs(s : int, k : int) : double
+     pre: s >= 0
+     post:
+     Lk = sectors[k].L &
+     result = Integer.Sum(1,(s/Lk)->floor(),mk,sectors[k].vsk(mk)*ps(s-mk*Lk))
+    */
 	public double VS(int k, int s) {
 		double result = 0;
-
-		result = Set.sumdouble(Set.collect_2(
-				Set.integerSubrange(1, this.maxfails(k, s)), this, k, s));
+		result = Set.sumdouble( //求和
+				     Set.collect_2(
+				    		 Set.integerSubrange(1, this.maxfails(k, s)), 
+				             this, 
+				             k, 
+				             s       
+				     )
+				 );
 		return result;
 	}
 
+	
+	//执行test
+	public void test1outer() {
+		CDO cdox = this;
+		List _range1 = cdox.getsectors();
+		
+		//获取所有sector
+		for (int _i0 = 0; _i0 < _range1.size(); _i0++) {
+			Sector s = (Sector) _range1.get(_i0);
+			this.test1(s);//对每个sector执行test1
+		}
+	}
+	
+	//对于该sector,setmu(1-(1-p)^n)
 	public void test1(Sector s) {
 		Controller.inst().setmu(s, 1 - Math.pow((1 - s.getp()), s.getn()));
 	}
 
-	public void test1outer() {
-		CDO cdox = this;
-		List _range1 = cdox.getsectors();
-		for (int _i0 = 0; _i0 < _range1.size(); _i0++) {
-			Sector s = (Sector) _range1.get(_i0);
-			this.test1(s);
-		}
-	}
-
+	//对于该CDO,setps0(e^(所有sector的mu值的和))
 	public void test2() {
 		Controller.inst().setps0(
 				this,
-				Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this
-						.getsectors()))));
+				Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
 	}
 
+	//输出该CDO的PS(0到50)
 	public void test3() {
 		List _integer_list2 = new Vector();
 		_integer_list2.addAll(Set.integerSubrange(0, 50));
 		for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++) {
 			int s = ((Integer) _integer_list2.get(_ind3)).intValue();
-			System.out.println("" + this.PS(s));
-
+			System.out.println("PS(" + s + "): " + this.PS(s));
 		}
-
 	}
 
 	private java.util.Map PS_cache = new java.util.HashMap();
