@@ -192,6 +192,7 @@ class CDO implements SystemTypes {
 		Object cached_result = PS_cache.get(new Double(s));
 		if (cached_result != null) { //能取到该值
 			result = ((Double) cached_result).doubleValue();
+			System.out.println("s: " + s + "result: " + result);
 			return result;
 		} else { //不能取到该值(未put过)
 			
@@ -204,8 +205,7 @@ class CDO implements SystemTypes {
 			} else if (s > 0) { //当key大于0时，put (1.0/s)*Integer.Sum(1,sectors.size,k,vs(s,k))) 
 				                               //k从1到sectors.size,所有vs(s,k)的和
 				                               //即(所有sector中vs(s,k)的和) / s
-				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;
-
+				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;				
 			}
 			PS_cache.put(new Double(s), new Double(result));
 		}
@@ -248,7 +248,9 @@ class CDO implements SystemTypes {
 	
 	//对于该sector,setmu(1-(1-p)^n)
 	public void test1(Sector s) {
+		System.out.println("s.getp(): " + (s.getp()));
 		Controller.inst().setmu(s, 1 - Math.pow((1 - s.getp()), s.getn()));
+		s.InitL();
 	}
 
 	//对于该CDO,setps0(e^(所有sector的mu值的和))
@@ -260,11 +262,23 @@ class CDO implements SystemTypes {
 
 	//输出该CDO的PS(0到50)
 	public void test3() {
+		
 		List _integer_list2 = new Vector();
 		_integer_list2.addAll(Set.integerSubrange(0, 50));
 		for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++) {
 			int s = ((Integer) _integer_list2.get(_ind3)).intValue();
 			System.out.println("PS(" + s + "): " + this.PS(s));
+		}
+		
+		
+        for(int i = 0; i < sectors.size(); i++){
+        	Sector s = (Sector)sectors.get(i);
+			System.out.println("Sector" + i + "L: " + s.getL());
+			for(int j = 0; j < s.getborrowers().size(); j++){
+				BorrowerInSector bj = (BorrowerInSector)(s.getborrowers().get(j));
+				System.out.println("omega: " + bj.getomega() + " theta: "+ bj.gettheta() + " L: "+ bj.getborrower().getL() + " p: "+ bj.getborrower().getp());
+			}
+			
 		}
 	}
 

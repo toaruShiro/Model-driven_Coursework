@@ -12,6 +12,8 @@ class Sector implements SystemTypes
 	private double L = 0; // internal
 	private double mu = 0; // internal
 	
+	private double rc = 0;
+	
 	private List borrowers = new Vector(); // of BorrowerInSector
 
 	public Sector() {
@@ -103,6 +105,10 @@ class Sector implements SystemTypes
 	
 	public void addborrowers(BorrowerInSector bisxx) {
 		borrowers.add(bisxx);
+	}
+	
+	public List getborrowers() {
+		return borrowers;
 	}
 	
 
@@ -207,8 +213,10 @@ class Sector implements SystemTypes
 	}
 
 	public double getL() {
-		
-//		L = 0;
+		return L;
+	}
+	
+	public void InitL(){
 		for(int i = 0; i < borrowers.size(); i++){
 			BorrowerInSector bi = (BorrowerInSector)(borrowers.get(i));
 			double li = bi.getborrower().getL();
@@ -216,8 +224,11 @@ class Sector implements SystemTypes
 			li *= bi.gettheta();
 			L += li;
 		}
+	}
+	
+	public void InitRc(){
 		
-		return L;
+		
 	}
 
 	public static List getAllL(List sectors) {
