@@ -171,29 +171,30 @@ class CDO implements SystemTypes {
 		return result;
 	}
 
-	public int maxfails(int k, int s) {
+	public int maxfails(int k, double s) {
 		int result = 0;
 
-		if (((Sector) sectors.get(k - 1)).getn() <= (s / ((Sector) sectors
-				.get(k - 1)).getL())) {
+		if (((Sector) sectors.get(k - 1)).getn() <= (s / ((Sector) sectors.get(k - 1)).getL())) {
+			
 			result = ((Sector) sectors.get(k - 1)).getn();
 
 		} else if (((Sector) sectors.get(k - 1)).getn() > (s / ((Sector) sectors
 				.get(k - 1)).getL())) {
-			result = s / ((Sector) sectors.get(k - 1)).getL();
+			result = (int)(s / ((Sector) sectors.get(k - 1)).getL());
 
 		}
 		return result;
 	}
 
-	public double PS(int s) {
+	public double PS(double s) {
 		double result = 0;
 		//获取PS_cache中key为s的值
-		Object cached_result = PS_cache.get(new Integer(s));
+		Object cached_result = PS_cache.get(new Double(s));
 		if (cached_result != null) { //能取到该值
 			result = ((Double) cached_result).doubleValue();
 			return result;
 		} else { //不能取到该值(未put过)
+			
 			if (s < 0) {
 				result = 0;
 				System.out.println("s < 0: " + s);
@@ -206,7 +207,7 @@ class CDO implements SystemTypes {
 				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;
 
 			}
-			PS_cache.put(new Integer(s), new Double(result));
+			PS_cache.put(new Double(s), new Double(result));
 		}
 		return result;
 	}
@@ -219,7 +220,7 @@ class CDO implements SystemTypes {
      Lk = sectors[k].L &
      result = Integer.Sum(1,(s/Lk)->floor(),mk,sectors[k].vsk(mk)*ps(s-mk*Lk))
     */
-	public double VS(int k, int s) {
+	public double VS(int k, double s) {
 		double result = 0;
 		result = Set.sumdouble( //求和
 				     Set.collect_2(

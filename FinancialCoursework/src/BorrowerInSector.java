@@ -1,4 +1,3 @@
-
 public class BorrowerInSector implements SystemTypes {
 	private double theta = 0;
 	private double omega = 0;
@@ -13,12 +12,24 @@ public class BorrowerInSector implements SystemTypes {
 		theta = theta0;
 	}
 	
+	public double gettheta(){
+		return theta;
+	}
+	
 	public void setomega(double omega0){
 		omega = omega0;
 	}
 	
+	public double getomega(){
+		return omega;
+	}
+	
 	public void setborrower(Borrower borrower0){
 		borrower = borrower0;
+	}
+	
+	public Borrower getborrower(){
+		return borrower;
 	}
 
 }

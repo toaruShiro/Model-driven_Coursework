@@ -9,7 +9,7 @@ class Sector implements SystemTypes
 	private int n = 0; // internal
 	private double p = 0; // internal
 	private double q = 0; // internal
-	private int L = 0; // internal
+	private double L = 0; // internal
 	private double mu = 0; // internal
 	
 	private List borrowers = new Vector(); // of BorrowerInSector
@@ -206,7 +206,17 @@ class Sector implements SystemTypes
 		return result;
 	}
 
-	public int getL() {
+	public double getL() {
+		
+//		L = 0;
+		for(int i = 0; i < borrowers.size(); i++){
+			BorrowerInSector bi = (BorrowerInSector)(borrowers.get(i));
+			double li = bi.getborrower().getL();
+			li *= bi.getomega();
+			li *= bi.gettheta();
+			L += li;
+		}
+		
 		return L;
 	}
 
@@ -214,9 +224,9 @@ class Sector implements SystemTypes
 		List result = new Vector();
 		for (int i = 0; i < sectors.size(); i++) {
 			Sector sectorx = (Sector) sectors.get(i);
-			if (result.contains(new Integer(sectorx.getL()))) {
+			if (result.contains(new Double(sectorx.getL()))) {
 			} else {
-				result.add(new Integer(sectorx.getL()));
+				result.add(new Double(sectorx.getL()));
 			}
 		}
 		return result;
@@ -226,7 +236,7 @@ class Sector implements SystemTypes
 		List result = new Vector();
 		for (int i = 0; i < sectors.size(); i++) {
 			Sector sectorx = (Sector) sectors.get(i);
-			result.add(new Integer(sectorx.getL()));
+			result.add(new Double(sectorx.getL()));
 		}
 		return result;
 	}

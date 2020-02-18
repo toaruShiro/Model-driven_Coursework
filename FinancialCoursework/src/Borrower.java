@@ -16,8 +16,16 @@ public class Borrower implements SystemTypes {
 		L = l;
 	}
 	
+	public double getL(){
+		return L;
+	}
+	
 	public void setp(double p0){
 		p = p0;
+	}
+	
+	public double getp(){
+		return p;
 	}
 
 }

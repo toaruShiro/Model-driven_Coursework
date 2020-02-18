@@ -8,7 +8,7 @@ public interface SystemTypes {
 	public class Set {
 		private Vector elements = new Vector();
 
-		public static List collect_1(List _l, CDO cdox, int s) {
+		public static List collect_1(List _l, CDO cdox, double s) {
 			List _results_1 = new Vector();
 			for (int _i = 0; _i < _l.size(); _i++) {
 				int k = ((Integer) _l.get(_i)).intValue();
@@ -36,7 +36,7 @@ public interface SystemTypes {
 			return _results_3;
 		}
 
-		public static List collect_2(List _l, CDO cdox, int k, int s) {
+		public static List collect_2(List _l, CDO cdox, int k, double s) {
 			List _results_2 = new Vector();
 			for (int _i = 0; _i < _l.size(); _i++) {
 				int mk = ((Integer) _l.get(_i)).intValue();
@@ -46,7 +46,7 @@ public interface SystemTypes {
 						      * mk
 						      * ((Sector) cdox.getsectors().get(k - 1)).getL()
 					     	  * cdox.PCond(k, mk) 
-					     	  * cdox.PS(s - mk * ((Sector) cdox.getsectors().get(k - 1)).getL()
+					     	  * cdox.PS((s - mk * ((Sector) cdox.getsectors().get(k - 1)).getL())
 					     	           )
 					)
 				);
