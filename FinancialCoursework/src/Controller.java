@@ -464,7 +464,7 @@ public class Controller implements SystemTypes, ControllerInterface {
 		sectorx.setL(L_x);
 	}
 
-	public void setmu(Sector sectorx, double mu_x) {
+	public void setmu(Sector sectorx, float mu_x) {
 		sectorx.setmu(mu_x);
 	}
 

@@ -10,7 +10,7 @@ class Sector implements SystemTypes
 	private double p = 0; // internal
 	private double q = 0; // internal
 	private double L = 0; // internal
-	private double mu = 0; // internal
+	private float mu = 0; // internal
 	
 	private double rc = 0;
 	
@@ -92,11 +92,11 @@ class Sector implements SystemTypes
 		}
 	}
 
-	public void setmu(double mu_x) {
+	public void setmu(float mu_x) {
 		mu = mu_x;
 	}
 
-	public static void setAllmu(List sectors, double val) {
+	public static void setAllmu(List sectors, float val) {
 		for (int i = 0; i < sectors.size(); i++) {
 			Sector sectorx = (Sector) sectors.get(i);
 			Controller.inst().setmu(sectorx, val);
@@ -214,6 +214,27 @@ class Sector implements SystemTypes
 
 	public double getL() {
 		return L;
+	}
+	
+	public void InitMu(){
+		float mu0 = 0;
+		float temp = 1;
+		for(int i = 0; i < borrowers.size(); i++){
+			BorrowerInSector bi = (BorrowerInSector)(borrowers.get(i));
+			temp *= (1 - bi.getborrower().getp());
+		}
+		
+		mu0 = 1 - temp;
+		mu = mu0;
+	}
+	
+	//µk = 1 - (1 - pk)^nk
+	//pk = 1 - (1 - uk)^1/n
+	public void InitP(){
+		float temp = 0;
+		temp = (float)Math.pow((1 - mu), ( 1 / (float)n ));
+		System.out.println("temp: " + temp + " float: " + ( 1 / (float)n ));
+		p = 1 - temp;
 	}
 	
 	public void InitL(){

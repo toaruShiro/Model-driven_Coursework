@@ -5,6 +5,7 @@ class CDO implements SystemTypes {
 
 	private double ps0 = 0; // internal
 	private List sectors = new Vector(); // of Sector
+	private float riskContribution = 0;
 
 	public CDO() {
 		this.ps0 = 0;
@@ -161,9 +162,7 @@ class CDO implements SystemTypes {
 
 		if (m >= 1) {
 			result = this.P(k, m)
-					/ (1 - Math.pow((1 - ((Sector) sectors.get(k - 1)).getp()),
-							((Sector) sectors.get(k - 1)).getn()));
-
+					/ ((Sector) sectors.get(k - 1)).getmu();
 		} else if (m < 1) {
 			result = 0;
 
@@ -186,7 +185,7 @@ class CDO implements SystemTypes {
 		return result;
 	}
 
-	public double PS(double s) {
+	public double PS(int s) {
 		double result = 0;
 		//获取PS_cache中key为s的值
 		Object cached_result = PS_cache.get(new Double(s));
@@ -207,7 +206,7 @@ class CDO implements SystemTypes {
 				                               //即(所有sector中vs(s,k)的和) / s
 				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;				
 			}
-			PS_cache.put(new Double(s), new Double(result));
+			PS_cache.put(new Integer(s), new Double(result));
 		}
 		return result;
 	}
@@ -232,6 +231,17 @@ class CDO implements SystemTypes {
 				 );
 		return result;
 	}
+	
+	public void InitRiskContribution(){
+		
+		riskContribution = 0;
+		
+		float t0 = 0, t1 = 0;
+		
+//		t0 = sectors
+		
+		
+	}
 
 	
 	//执行test
@@ -248,8 +258,10 @@ class CDO implements SystemTypes {
 	
 	//对于该sector,setmu(1-(1-p)^n)
 	public void test1(Sector s) {
-		System.out.println("s.getp(): " + (s.getp()));
-		Controller.inst().setmu(s, 1 - Math.pow((1 - s.getp()), s.getn()));
+		
+		System.out.println("s.getq(): " + (s.getq()));
+		s.InitMu();
+		s.InitP();
 		s.InitL();
 	}
 
@@ -258,6 +270,7 @@ class CDO implements SystemTypes {
 		Controller.inst().setps0(
 				this,
 				Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
+		InitRiskContribution();
 	}
 
 	//输出该CDO的PS(0到50)
@@ -273,10 +286,10 @@ class CDO implements SystemTypes {
 		
         for(int i = 0; i < sectors.size(); i++){
         	Sector s = (Sector)sectors.get(i);
-			System.out.println("Sector" + i + "L: " + s.getL());
+			System.out.println("\nSector" + i + ":\n  L: " + s.getL() + " p:" + s.getp() + " q:" + s.getq() + " mu:" + s.getmu() + " n:" + s.getn());
 			for(int j = 0; j < s.getborrowers().size(); j++){
 				BorrowerInSector bj = (BorrowerInSector)(s.getborrowers().get(j));
-				System.out.println("omega: " + bj.getomega() + " theta: "+ bj.gettheta() + " L: "+ bj.getborrower().getL() + " p: "+ bj.getborrower().getp());
+				System.out.println("    borrowerInSector" + j + ": \n" + "      omega: " + bj.getomega() + " theta: "+ bj.gettheta() + " L: "+ bj.getborrower().getL() + " p: "+ bj.getborrower().getp());
 			}
 			
 		}
