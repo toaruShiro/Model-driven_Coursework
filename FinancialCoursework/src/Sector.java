@@ -14,7 +14,7 @@ class Sector implements SystemTypes
 	
 	private double rc = 0;
 	
-	private List borrowers = new Vector(); // of BorrowerInSector
+	private List<BorrowerInSector> borrowers = new Vector(); // of BorrowerInSector
 
 	public Sector() {
 		this.name = "";
@@ -107,7 +107,7 @@ class Sector implements SystemTypes
 		borrowers.add(bisxx);
 	}
 	
-	public List getborrowers() {
+	public List<BorrowerInSector> getborrowers() {
 		return borrowers;
 	}
 	

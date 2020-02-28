@@ -108,7 +108,7 @@ public class Controller implements SystemTypes, ControllerInterface {
 							objectmap.put(left, xinst);
 							Class[] cargs = new Class[] { cl };
 							Method addC = cont.getMethod("add" + right, cargs);
-							System.out.println("Method name: add" + right);
+							System.out.println("Method name: add" + right + ": " + left);
 							System.out.println("Method: " + addC);
 							if (addC == null) {
 								System.err.println("No Method in Controller: add" + right);
@@ -537,6 +537,10 @@ public class Controller implements SystemTypes, ControllerInterface {
 	public void test3(CDO cdox) {
 		cdox.test3();
 	}
+	
+	public void test4(CDO cdox, Vector bs) {
+		cdox.test4(bs);
+	}
 
 	public List AllSectornocontagion(List sectorxs, int m) {
 		List result = new Vector();
@@ -623,6 +627,13 @@ public class Controller implements SystemTypes, ControllerInterface {
 		cdotest3x.addAll(Controller.inst().cdos);
 		for (int cdotest3x_ind6 = 0; cdotest3x_ind6 < cdotest3x.size(); cdotest3x_ind6++) {
 			Controller.inst().test3((CDO) cdotest3x.get(cdotest3x_ind6));
+		}
+		
+		//对于所有CDO,执行test4
+		List cdotest4x = new Vector();
+		cdotest4x.addAll(Controller.inst().cdos);
+		for (int cdotest4x_ind7 = 0; cdotest4x_ind7 < cdotest4x.size(); cdotest4x_ind7++) {
+			Controller.inst().test4((CDO) cdotest4x.get(cdotest4x_ind7), borrowers);
 		}
 
 		Date d2 = new Date();

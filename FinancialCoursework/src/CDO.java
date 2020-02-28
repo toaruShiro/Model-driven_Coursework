@@ -1,15 +1,29 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 class CDO implements SystemTypes {
 
 	private double ps0 = 0; // internal
-	private List sectors = new Vector(); // of Sector
+	private List<Sector> sectors = new Vector(); // of Sector
+	private List<String> borrowerList = new ArrayList<String>();
 	private float riskContribution = 0;
 
 	public CDO() {
 		this.ps0 = 0;
 
+	}
+	
+	public List<String> getBorrowerList() {
+		return borrowerList;
+	}
+	
+	public void addBorrower(String name) {
+		borrowerList.add(name);
+	}
+
+	public void setBorrowerList(List<String> borrowerList) {
+		this.borrowerList = borrowerList;
 	}
 
 	public String toString() {
@@ -232,16 +246,7 @@ class CDO implements SystemTypes {
 		return result;
 	}
 	
-	public void InitRiskContribution(){
-		
-		riskContribution = 0;
-		
-		float t0 = 0, t1 = 0;
-		
-//		t0 = sectors
-		
-		
-	}
+	
 
 	
 	//执行test
@@ -270,7 +275,7 @@ class CDO implements SystemTypes {
 		Controller.inst().setps0(
 				this,
 				Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
-		InitRiskContribution();
+//		InitRiskContribution();
 	}
 
 	//输出该CDO的PS(0到50)
@@ -283,6 +288,7 @@ class CDO implements SystemTypes {
 			System.out.println("PS(" + s + "): " + this.PS(s));
 		}
 		
+//		List<Borrower> allBorrowers = new ArrayList<Borrower>();
 		
         for(int i = 0; i < sectors.size(); i++){
         	Sector s = (Sector)sectors.get(i);
@@ -290,10 +296,241 @@ class CDO implements SystemTypes {
 			for(int j = 0; j < s.getborrowers().size(); j++){
 				BorrowerInSector bj = (BorrowerInSector)(s.getborrowers().get(j));
 				System.out.println("    borrowerInSector" + j + ": \n" + "      omega: " + bj.getomega() + " theta: "+ bj.gettheta() + " L: "+ bj.getborrower().getL() + " p: "+ bj.getborrower().getp());
+			    
+//				boolean existBorrower;
+//				for(int k = 0; k < allBorrowers.size(); k++){
+//					if(allBorrowers.get(k).equals(bj.getborrower()))continue;
+//				}
 			}
 			
 		}
 	}
+	
+	//遍历该CDO，计算其所有用户contribution
+	//bs为所有用户列表
+	public void test4(Vector bs) {
+		
+		List<Float> contributionList = new ArrayList<Float>();
+		
+		List<Boolean> hasCalculated = new ArrayList<Boolean>();
+		
+		
+		boolean exist[] = new boolean[bs.size()];
+		
+		for(int i = 0; i < bs.size(); i++){
+			exist[i] = false;
+		}
+		
+		for(int i = 0;i < bs.size(); i++){
+			Borrower bi = (Borrower) bs.get(i);
+			for(int j = 0; j < sectors.size(); j++){
+	        	Sector s = (Sector)sectors.get(j);
+				for(int k = 0; k < s.getborrowers().size(); k++){
+					BorrowerInSector bk = (BorrowerInSector)(s.getborrowers().get(k));
+					if(bi.equals(bk.getborrower())){//bi存在于sector s中，即存在于该CDO中
+						exist[i] = true;
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < bs.size(); i++){
+			System.out.println(exist[i]);
+		}
+		
+		for(int i = 0; i < bs.size(); i++){
+			if(exist[i]){
+				float contribution = CalculateContribution((Borrower)(bs.get(i)));
+				contributionList.add(contribution);
+//				System.out.println("contribution: " + contribution);
+			}
+			
+		}
+		
+		
+		for(int i = 0; i < contributionList.size(); i++){
+			System.out.println("RiskContribution: " + contributionList.get(i));
+			
+		}
+		
+		
+//		for(int i = 0; i < sectors.size(); i++){
+//        	Sector s = (Sector)sectors.get(i);
+//			System.out.println("\nSector" + i + ":\n  L: " + s.getL() + " p:" + s.getp() + " q:" + s.getq() + " mu:" + s.getmu() + " n:" + s.getn());
+//			for(int j = 0; j < s.getborrowers().size(); j++){
+//				BorrowerInSector bj = (BorrowerInSector)(s.getborrowers().get(j));
+//				System.out.println("    borrowerInSector" + j + ": \n" + "      omega: " + bj.getomega() + " theta: "+ bj.gettheta() + " L: "+ bj.getborrower().getL() + " p: "+ bj.getborrower().getp());
+//			
+//			}
+//		}
+		
+	}
+	
+    private float CalculateContribution(Borrower bi) {
+    	float t0 = 0, t1 = 0;
+    	
+    	//前半部分
+    	for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i-1)).getborrowers().size(); j++){
+//				System.out.println("sectors.get(i-1).getborrowers().get(j-1): " + sectors.get(i-1).getborrowers().get(j-1));
+//				System.out.println("bi: " + bi);
+				if(sectors.get(i-1).getborrowers().get(j-1).getborrower().equals(bi)){
+					float innerTemp = 0;
+					innerTemp = (float) (j * P(i, j) * (float)sectors.get(i-1).getborrowers().get(j-1).getomega() 
+							                         * (float)sectors.get(i-1).getborrowers().get(j-1).gettheta()
+							            );
+					outTemp += innerTemp;
+					
+				}
+			}
+			t0 += outTemp;
+			
+		}
+    	t0 *= bi.getL();
+    	
+    	
+        float EL = 0;
+		
+		for(int i = 0; i <= 50; i++){
+			EL += i *PS(i);
+		}
+		
+		float thegmapow = 0;
+		for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i-1)).getborrowers().size(); j++){
+				float innerTemp = 0;
+				float bL = (float)sectors.get(i-1).getborrowers().get(j-1).getborrower().getL();
+				float muk = (float)sectors.get(i-1).getmu();
+				innerTemp = (float) ( j * j * bL * bL * P(i, j)
+						            );
+				outTemp += innerTemp;
+			}
+			thegmapow += outTemp;
+		}
+		
+		
+		float ibeDivThegma = 1 - EL / thegmapow;
+		
+		
+		for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i-1)).getborrowers().size(); j++){
+				if(sectors.get(i-1).getborrowers().get(j-1).getborrower().equals(bi)){
+					
+					float innerTemp = 0;
+					float ome = (float)sectors.get(i-1).getborrowers().get(j-1).getomega();
+					float the = (float)sectors.get(i-1).getborrowers().get(j-1).gettheta();
+					float la = (float) bi.getL();
+					
+					float sum = 0;
+					
+					for(int k = 0; k < ((Sector)sectors.get(i-1)).getborrowers().size(); k++){
+						if(sectors.get(i-1).getborrowers().get(k).getborrower().equals(bi)){
+							continue;
+						}
+						float omeb = (float)sectors.get(i-1).getborrowers().get(k).getomega();
+						float theb = (float)sectors.get(i-1).getborrowers().get(k).gettheta();
+						float lb = (float) sectors.get(i-1).getborrowers().get(k).getborrower().getL();
+						sum += ome * omeb * the * theb * la * lb;
+					}
+					
+					innerTemp = (float) (j * j * (ome * ome * the * the * la * la + sum) * P(i,j));
+					
+					outTemp += innerTemp;
+				}
+			}
+			t1 += outTemp;
+		}
+		
+		t1 *= ibeDivThegma;
+		
+		float riskContribution = t0 + t1;
+		
+//		System.out.println("t0: " + t0 + " t1:" + t1);
+	
+		return riskContribution;
+    }
+
+public void InitRiskContribution(){
+		
+		riskContribution = 0;
+		
+		float t0 = 0, t1 = 0;
+		
+		for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i)).getborrowers().size(); j++){
+				float innerTemp = 0;
+				
+				innerTemp = (float) (j * P(i, j) * (float)sectors.get(i).getborrowers().get(j).getomega() 
+						                         * (float)sectors.get(i).getborrowers().get(j).gettheta()
+						            );
+				outTemp += innerTemp;
+			}
+			t0 += outTemp;
+		}
+		
+		for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i)).getborrowers().size(); j++){
+				float innerTemp = 0;
+				
+				float ome = (float)sectors.get(i).getborrowers().get(j).getomega();
+				float the = (float)sectors.get(i).getborrowers().get(j).gettheta();
+				float bL = (float)sectors.get(i).getborrowers().get(j).getborrower().getL();
+				
+//				innerTemp = (float) (j * j * P(i, j) 
+//						               * ( (ome * the * bL) * (ome * the * bL) + () )
+//						            );
+				
+				
+				outTemp += innerTemp;
+			}
+			t1 += outTemp;
+		}
+		
+		
+		float EL = 0;
+		
+		for(int i = 0; i <= 50; i++){
+			EL += i *PS(i);
+		}
+		
+		float thegmapow = 0;
+		for(int i = 1; i <= sectors.size(); i++){
+			float outTemp = 0;
+			for(int j = 1; j <= ((Sector)sectors.get(i)).getborrowers().size(); j++){
+				float innerTemp = 0;
+				float bL = (float)sectors.get(i).getborrowers().get(j).getborrower().getL();
+				float muk = (float)sectors.get(i).getmu();
+				innerTemp = (float) ( j * j * bL * bL * P(i, j)
+						            );
+				outTemp += innerTemp;
+			}
+			thegmapow += outTemp;
+		}
+		
+//		thegmapow
+//		
+//		
+//		
+//		t1 = 1 - EL / thegmapow;
+//		t1 /= thegma;
+		
+		
+		
+		
+	}
+	
+	
+	
+
+
+
+
+
 
 	private java.util.Map PS_cache = new java.util.HashMap();
 
