@@ -312,6 +312,21 @@ class Sector implements SystemTypes
 		}
 		return result;
 	}
+	
+	public double nocontagion(double m) {
+		double result = 0;
+		Object cached_result = nocontagion_cache.get(new Double(m));
+		if (cached_result != null) {
+			result = ((Double) cached_result).doubleValue();
+			return result;
+		} else {
+			result = Math.pow((1 - p), n - m) * Math.pow(p, m)
+					* Math.pow((1 - q), m * (n - m));
+
+			nocontagion_cache.put(new Double(m), new Double(result));
+		}
+		return result;
+	}
 
 	public double contagion(int i, int m) {
 		double result = 0;

@@ -3,7 +3,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
-
 import java.lang.*;
 import java.lang.reflect.*;
 import java.util.StringTokenizer;
@@ -640,6 +639,22 @@ public class Controller implements SystemTypes, ControllerInterface {
 		long t2 = d2.getTime();
 		System.out.println("Time = " + (t2 - t1));
 
+	}
+	
+	public void testBorrowerInSector(int cdo, int k0, int i0) {
+		
+		if(cdos.size() == 0){
+			System.out.println("Please load the model");
+			return;
+		}
+		
+		if(cdo - 1 > cdos.size()){
+			System.err.println("Don't have so many CDOs!");
+			return;
+		}
+		
+		System.out.println("using CDO" + cdo);
+		((CDO)cdos.get(cdo-1)).borrowerRiskContribution(k0, i0);
 	}
 
 }

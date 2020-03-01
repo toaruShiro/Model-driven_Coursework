@@ -35,6 +35,7 @@ class StatFunc implements SystemTypes {
 		}
 		return result;
 	}
+	
 
 	private static java.util.Map comb_cache = new java.util.HashMap();
 

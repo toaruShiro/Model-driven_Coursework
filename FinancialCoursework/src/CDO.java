@@ -6,23 +6,16 @@ class CDO implements SystemTypes {
 
 	private double ps0 = 0; // internal
 	private List<Sector> sectors = new Vector(); // of Sector
-	private List<String> borrowerList = new ArrayList<String>();
+	private List<Borrower> relatedBorrowers = new ArrayList<Borrower>();
 	
 	public CDO() {
 		this.ps0 = 0;
 
 	}
 	
-	public List<String> getBorrowerList() {
-		return borrowerList;
-	}
 	
-	public void addBorrower(String name) {
-		borrowerList.add(name);
-	}
-
-	public void setBorrowerList(List<String> borrowerList) {
-		this.borrowerList = borrowerList;
+	public void addBorrower(Borrower br) {
+		relatedBorrowers.add(br);
 	}
 
 	public String toString() {
@@ -223,6 +216,32 @@ class CDO implements SystemTypes {
 		}
 		return result;
 	}
+	
+	public double PS(double s) {
+		double result = 0;
+		//获取PS_cache中key为s的值
+		Object cached_result = PS_cache.get(new Double(s));
+		if (cached_result != null) { //能取到该值
+			result = ((Double) cached_result).doubleValue();
+			System.out.println("s: " + s + "result: " + result);
+			return result;
+		} else { //不能取到该值(未put过)
+			
+			if (s < 0) {
+				result = 0;
+				System.out.println("s < 0: " + s);
+			} else if (s == 0) { //当key s为0时put p0
+				result = ps0;
+
+			} else if (s > 0) { //当key大于0时，put (1.0/s)*Integer.Sum(1,sectors.size,k,vs(s,k))) 
+				                               //k从1到sectors.size,所有vs(s,k)的和
+				                               //即(所有sector中vs(s,k)的和) / s
+				result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1, sectors.size()), this, s)) / s;				
+			}
+			PS_cache.put(new Double(s), new Double(result));
+		}
+		return result;
+	}
 
 	/*
 	 CDO::
@@ -323,9 +342,14 @@ class CDO implements SystemTypes {
 			}
 		}
 		
-		for(int i = 0; i < bs.size(); i++){
-			System.out.println(exist[i]);
+		if(relatedBorrowers.size() == 0){
+			for(int i = 0; i < bs.size(); i++){
+				if(exist[i]){
+				    relatedBorrowers.add((Borrower) bs.get(i));
+				}
+			}
 		}
+		
 		
 		for(int i = 0; i < bs.size(); i++){
 			if(exist[i]){
@@ -338,9 +362,40 @@ class CDO implements SystemTypes {
 		
 		for(int i = 0; i < contributionList.size(); i++){
 			System.out.println("RiskContribution: " + contributionList.get(i));
-			
 		}
 		
+//		borrowerRiskContribution(1,1);
+		
+	}
+	
+	public float borrowerRiskContribution(int k, int i){
+		if(k <= 0 || i <= 0){
+			System.err.println("invalid k and i!");
+			return 0;
+		}
+		
+		if(k > sectors.size()){
+			System.err.println("This CDO doesn't have so many sectors!");
+			return 0;
+		}
+		
+		if(i > sectors.get(k-1).getborrowers().size()){
+			System.err.println("This sector doesn't have so many borrowers!");
+			return 0;
+		}
+		
+		Borrower b = sectors.get(k-1).getborrowers().get(i-1).getborrower();
+		
+		for(int j = 0; j < relatedBorrowers.size(); j++){
+			if(relatedBorrowers.get(j).equals(b)){
+				float contribution = CalculateContribution(b);
+				System.out.println("contribution of borrower(" + k + ", " + i + "): " + contribution);
+				return contribution;
+			}
+		}
+		
+		System.err.println("cannot find this borrower: Sector " + k + ", Borrower " + i + ", Please click test() first");
+		return 0;
 	}
 	
     private float CalculateContribution(Borrower bi) {
