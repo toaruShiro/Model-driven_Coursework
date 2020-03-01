@@ -22,7 +22,7 @@ public class GUI extends JFrame implements ActionListener {
 	JTextArea sectorTextArea = new JTextArea();
 	JLabel borrowerLabel = new JLabel("borrower: ");
 	JTextArea borrowerTextArea = new JTextArea();
-	JButton testBorrowerInSectorButton = new JButton("testBorrowerInSector");
+	JButton testBorrowerInSectorButton = new JButton("testRiskContribution");
 
 	public GUI() {
 		super("Select use case to execute");
@@ -90,7 +90,7 @@ public class GUI extends JFrame implements ActionListener {
 			cont.test();
 			return;
 		}
-		if ("testBorrowerInSector".equals(cmd)) {
+		if ("testRiskContribution".equals(cmd)) {
 			if(cdoTextArea.getText().equals("") || sectorTextArea.getText().equals("") || borrowerTextArea.getText().equals("")){
 				System.out.println("Please input target cdo, sector and sequence of borrower");
 				return;

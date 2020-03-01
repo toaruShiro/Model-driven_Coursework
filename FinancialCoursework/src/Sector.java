@@ -233,7 +233,7 @@ class Sector implements SystemTypes
 	public void InitP(){
 		float temp = 0;
 		temp = (float)Math.pow((1 - mu), ( 1 / (float)n ));
-		System.out.println("temp: " + temp + " float: " + ( 1 / (float)n ));
+//		System.out.println("temp: " + temp + " float: " + ( 1 / (float)n ));
 		p = 1 - temp;
 	}
 	

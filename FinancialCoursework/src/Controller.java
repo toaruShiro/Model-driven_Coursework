@@ -90,7 +90,7 @@ public class Controller implements SystemTypes, ControllerInterface {
 					//如果操作符右边没有点
 					if (i2 == -1) {
 						
-						System.out.println("right: " + right);
+//						System.out.println("right: " + right);
 						
 						Class cl;
 						try {
@@ -107,8 +107,8 @@ public class Controller implements SystemTypes, ControllerInterface {
 							objectmap.put(left, xinst);
 							Class[] cargs = new Class[] { cl };
 							Method addC = cont.getMethod("add" + right, cargs);
-							System.out.println("Method name: add" + right + ": " + left);
-							System.out.println("Method: " + addC);
+							System.out.println("Method invoked: add" + right + ": " + left);
+//							System.out.println("Method: " + addC);
 							if (addC == null) {
 								System.err.println("No Method in Controller: add" + right);
 								continue;
@@ -648,8 +648,13 @@ public class Controller implements SystemTypes, ControllerInterface {
 			return;
 		}
 		
-		if(cdo - 1 > cdos.size()){
+		if(cdo - 1 >= cdos.size()){
 			System.err.println("Don't have so many CDOs!");
+			return;
+		}
+		
+		if(cdo < 1){
+			System.err.println("Please input valid CDO index(Starts with 1)");
 			return;
 		}
 		

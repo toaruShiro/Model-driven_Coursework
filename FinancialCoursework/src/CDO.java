@@ -281,8 +281,6 @@ class CDO implements SystemTypes {
 	
 	//对于该sector,setmu(1-(1-p)^n)
 	public void test1(Sector s) {
-		
-		System.out.println("s.getq(): " + (s.getq()));
 		s.InitMu();
 		s.InitP();
 		s.InitL();
