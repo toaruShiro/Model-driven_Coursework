@@ -1,0 +1,84 @@
+
+// create a database
+create database named school
+
+// create table with the element it saves
+create a table named students_table, which saves data of student
+create a table named teachers_table, which saves data of teacher
+
+// define the attributes of elements
+teacher has attribute named name, which is Varchar
+teacher has attribute named age, which is Integer
+teacher has attribute named graduateAge, which is Integer
+teacher has attribute named subject, which is Varchar
+teacher has attribute named class, which is Varchar
+
+student has attribute named name, which is Varchar
+student has attribute named age, which is Integer
+student has attribute named subject, which is Varchar
+student has attribute named class, which is Integer
+student has attribute named hobby, which is Varchar
+student has attribute named nick_name, which is Varchar
+
+// add data into corresponding tables
+add a teacher with name of "Jack",subject of "Math", age of 40, graduateAge of 65 
+add a student with subject of "Math", age of 13, name of "Jim", nick_name of "Jimmy"
+add a student with class of 11, hobby of "painting"
+add a student with class of 10, hobbi of "piano", age of 16 
+
+// find the data of all attributes from a single table
+find the teacher
+
+// find the data of all attributes from a single table with conditions
+find the student, whose name is "Jim"
+
+// find some of the attributes from a single table with conditions
+find the name, age, class of teacher, whose 
+    age no larger than 35, 
+    age is less than graduateAge, 
+    graduateAge no less than 30,
+    subject is not "Math"
+    
+find the age, class of student, whose hobby is "piano"
+    
+// create table and define attribute instructions can be put in any part of codes,
+// the CREATE TABLE Sql instruction will be put at the beginning of dbl file
+create a table named guardians_table, which saves data of guardian
+guardian has attribute named child, which is Varchar
+
+// find the data of all attributes from several tables
+find the teacher with student with guardian,
+in which teacher's subject equals student's subject,
+         teacher's class equals student's class,
+         student's subject is "Math",
+         guardian's child is student's name,
+         student's age no less than 15, 
+         teacher's age is not 20,
+         teacher's age is larger than student's age, 
+         teacher's age is less than teacher's graduateAge,
+         teacher's name is "Bob",
+         student's nick_name is "Jimmy"
+
+// remove data from table
+remove the teacher, whose age is larger than graduateAge
+
+
+// format of attribute name is checked in define attribute instruction
+// but can be referenced in later instructions
+// checked every time saves
+teacher has attribute named monthlySalary, which is Double
+find the monthlySalary of teacher, whose monthlySalary no less than 500
+
+// undefined attributes in find instructions will cause errors
+// checked every time edits
+//find the monthly_salary of teacher, whose nick_name is "Jhon"
+//
+//find the teacher with student with guardian,
+//in which teacher's nick_name equals student's nick_name,
+//         teacher's name equals student's telephone,
+//         student's hobbi is "piano"
+         
+         
+// trying to add undefined element will cause errors
+// checked every time edits
+//add a dog with age of 3
