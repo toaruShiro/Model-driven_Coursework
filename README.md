@@ -3,7 +3,7 @@ coursework of Chongbo Fang and Xueqi Dang
 
 The project is based on XText + Eclipse environment, please make sure that basic Xtext environment can be used.
 
-Deployment:
+Deployment and execution:
 
 1 Download all the 5 directories start with "uk.ac.kcl..."
 
@@ -14,3 +14,4 @@ data, or simply add a file with suffix of ".mydbl", edit and save
 
 4 Generated SQL code can be found in src-gen directory
 
+PS: Please ignore "FinancialCoursework" directory which is uploaded by mistake
