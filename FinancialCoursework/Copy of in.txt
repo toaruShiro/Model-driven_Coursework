@@ -2,11 +2,12 @@ c : CDO
 s1 : Sector
 s1 : c.sectors
 s1.n = 2
-s1.q = 0.03
+s1.q = 0.05
 s2 : Sector
 s2 : c.sectors
 s2.n = 2
-s2.q = 0.05
+s2.q = 0.1
+
 a1 : Borrower
 a1.L = 5
 a1.p = 0.02
@@ -16,6 +17,9 @@ a2.p = 0.01
 a3 : Borrower
 a3.L = 4
 a3.p = 0.03
+
+
+
 b1 : BorrowerInSector
 b1.borrower = a1
 b1.theta = 1

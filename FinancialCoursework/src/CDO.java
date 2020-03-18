@@ -192,6 +192,7 @@ class CDO implements SystemTypes {
 	}
 
 	public double PS(int s) {
+//		System.out.println("PS: " + s);
 		double result = 0;
 		//获取PS_cache中key为s的值
 		Object cached_result = PS_cache.get(new Double(s));

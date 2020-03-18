@@ -1,0 +1,134 @@
+grammar uk.ac.kcl.shiro.mydbl0304.MyDbl with org.eclipse.xtext.common.Terminals
+
+generate myDbl "http://www.ac.uk/kcl/shiro/mydbl0304/MyDbl"
+
+
+Database:
+	
+	'create' 'database' 'named' name=ID
+	instructions+=Instructions*
+;
+	
+@Override 
+terminal STRING:
+			'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"' 
+;
+	
+Instructions:
+	CreateTableInstruction | CreateElementInstruction | CreateAttributeInstruction | AddInstruction | FindInstruction | DeleteInstruction
+;
+
+CreateTableInstruction:
+	'create' 'a' 'table' 'named' table = Table element = CreateElementInstruction
+;
+
+Table:
+	name = ID
+;
+
+
+CreateElementInstruction:
+	',' 'which' 'saves' 'data' 'of' element = Element
+;
+
+Element:
+	name = ID
+;
+
+CreateAttributeInstruction:
+	element = Element "has" "attribute" "named" attribute = Attribute "," "which" "is" attributeType = AttributeType
+	
+;
+
+Attribute:
+	name = ID
+;
+
+AttributeType:
+	"Binary" | "Varbinary" | "Image" | "Char" |
+	"Varchar" | "Text" | "Nchar" | "Nvarchar" |
+	"Ntext" | "Datetime" | "Smalldatetime" | "Date" |
+	"TimeStamp" | "Integer" | "Double" | "Float"
+;
+
+BasicVar:
+	integer = INT | string = STRING
+;
+
+//add a teacher with age of 40, subject of Math
+AddInstruction:
+	"add" "a" element = Element "with" insertInstruction = InsertInstruction
+;
+
+//age of 40, subject of Math
+InsertInstruction:
+	 setAttributeInstructions += SetAttributeInstruction("," setAttributeInstructions += SetAttributeInstruction)*
+
+;
+
+//age of 40
+SetAttributeInstruction:
+	attribute = Attribute "of" attributeValue = BasicVar
+;
+
+
+//find the teacher with student, in which teacher’s class equals student’s class
+//find the age of teacher whose age is larger than 35
+
+FindInstruction:
+	"find" "the" (SingleElement | JointElement)  
+;
+
+
+//find the teacher whose | find the age of teacher whose 
+SingleElement:
+	( targets = Target "of" )? element = Element ("," "whose" conditions = SingleCondition)?
+;
+
+Target:
+	attributes += Attribute("," attributes += Attribute)*
+;
+
+//find the teacher with student, in which
+JointElement:
+	elements += Element ( "with" elements += Element )+ "," "in" "which" conditions = JointCondition
+;
+
+//age is larger than 35, name equals Jack
+SingleCondition:
+	conditions += SingleConditionUnit ("," conditions += SingleConditionUnit)*
+;
+
+//teacher’s class equals student’s class, teacher’s age is larger than student’s age
+JointCondition:
+	conditions += JointConditionUnit ("," conditions += JointConditionUnit)*
+;
+
+//age is larger than 35 | age is less than graduateAge
+SingleConditionUnit:
+	attributeLeft = Attribute judgement = Judgement (attributeRight = Attribute | value = BasicVar)
+;
+
+//teacher’s class equals student’s class | teacher’s age equals 20
+JointConditionUnit:
+	elementLeft = AttributeOfElement judgement = Judgement (elementRight = AttributeOfElement | value = BasicVar)
+;
+
+AttributeOfElement:
+	element = Element "'s" attribute = Attribute
+;
+
+Judgement:
+	"is" | "as" | "equals" | "is" "not" | "not" "equals" | "is" "larger" "than" | "is" "less" "than"| "no" "less" "than" | "no" "larger" "than"
+;
+
+
+//remove teacher, whose age is larger than graduateAge
+DeleteInstruction:
+	"remove" "the" element = Element "," "whose" conditions = SingleCondition
+;
+
+//
+//ChangeInstruction:;
+//
+//DeleteInstruction:;

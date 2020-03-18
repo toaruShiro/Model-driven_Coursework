@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package
+			uri = "http://www.ac.uk/kcl/shiro/mydbl0304/MyDbl"
+			class = "uk.ac.kcl.shiro.mydbl0304.myDbl.MyDblPackage"
+			genModel = "model/generated/MyDbl.genmodel" />
+	</extension>
+</plugin>
